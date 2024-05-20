@@ -10,36 +10,43 @@ type Game = { id: number; sets: Set[] };
 type Data = Game[];
 
 function parseInput(path: string): Data {
-  return fs
-    .readFileSync(path, "utf-8")
-    .trimEnd()
-    .split("\n")
-    .map((line) => {
-      const [first, second] = line.trim().split(":");
+  try {
+    return fs
+      .readFileSync(path, "utf-8")
+      .trimEnd()
+      .split("\n")
+      .map((line) => {
+        const [first, second] = line.trim().split(":");
 
-      const id = Number(first.split(" ")[1]);
+        const id = Number(first.split(" ")[1]);
 
-      const sets = second.split(";").map((set) =>
-        set.split(",").map((cubes) => {
-          const [count, cube] = cubes.trim().split(" ");
-          return { count: Number(count), cube };
-        })
-      );
-      return { id, sets } as Game;
-    });
+        const sets = second.split(";").map((set) =>
+          set.split(",").map((cubes) => {
+            const [count, cube] = cubes.trim().split(" ");
+            return { count: Number(count), cube };
+          })
+        );
+        return { id, sets } as Game;
+      });
+  } catch (error) {
+    console.error("An error occurred while reading the file:", error);
+    return [];
+  }
 }
 
 // Part1
 
-const part1 = (data: Data) =>
+const part1 = (data: Data): number =>
   data
     .filter((game) =>
-      game.sets.flat().every((cubes) => {
-        if (cubes.cube === "red" && cubes.count > 12) return false;
-        if (cubes.cube === "green" && cubes.count > 13) return false;
-        if (cubes.cube === "blue" && cubes.count > 14) return false;
-        return true;
-      })
+      game.sets.every((set) =>
+        set.every((draw) => {
+          if (draw.cube === "red" && draw.count > 12) return false;
+          if (draw.cube === "green" && draw.count > 13) return false;
+          if (draw.cube === "blue" && draw.count > 14) return false;
+          return true;
+        })
+      )
     )
     .reduce((sum, currGame) => sum + currGame.id, 0);
 
@@ -50,10 +57,25 @@ console.log(part1(parseInput(input)));
 const part2 = (data: Data): number =>
   data
     .map((game) => {
-      const draws = game.sets.flat().sort((a, b) => b.count - a.count);
-      const minRed = draws.filter((draw) => draw.cube === "red")[0].count;
-      const minGreen = draws.filter((draw) => draw.cube === "green")[0].count;
-      const minBlue = draws.filter((draw) => draw.cube === "blue")[0].count;
+      let minRed = 0;
+      let minGreen = 0;
+      let minBlue = 0;
+
+      game.sets.flat().forEach((draw) => {
+        switch (draw.cube) {
+          case "red":
+            minRed = Math.max(minRed, draw.count);
+            break;
+          case "green":
+            minGreen = Math.max(minGreen, draw.count);
+            break;
+          case "blue":
+            minBlue = Math.max(minBlue, draw.count);
+            break;
+          default:
+            break;
+        }
+      });
 
       return minRed * minGreen * minBlue;
     })
