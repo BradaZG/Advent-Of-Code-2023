@@ -1,0 +1,22 @@
+{
+  "name": "aoc-2023",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Solutions for AoC 2023 with TypeScript",
+  "author": "Domagoj Marusic",
+  "type": "module",
+  "keywords": [
+    "AOC",
+    "Advent",
+    "Code",
+    "2023"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "bun-types": "^1.1.8"
+  }
+}
