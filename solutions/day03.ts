@@ -1,7 +1,7 @@
 import * as fs from "fs";
 
 const input = "../inputs/day03.txt";
-const inputTest = "../inputs/day03-t1.txt";
+const inputTest = "../inputs/day03-t.txt";
 
 type Data = string[];
 
